@@ -1,0 +1,38 @@
+#include<stdio.h>
+int main(){
+int incomingstream[]={2,4,5,6,7,8,6,7,4,2,9,2,5,4,7,5,9};
+int pagefaults=0;
+int frames =3;
+int m,n,s,pages;
+pages=sizeof(incomingstream)/sizeof(incomingstream[0]);
+printf("Incoming frame1\tframe2\tframe3");
+int temp[frames];
+for(m=0;m<frames;m++)
+    temp[m]=-1;
+for(m=0;m<pages;m++){
+    s=0;
+    for(n=0;n<frames;n++){
+        if(incomingstream[m]==temp[n]){
+            s++;
+            pagefaults--;
+        }
+    }
+    pagefaults++;
+if((pagefaults<=frames) && (s==0))
+    temp[m]=incomingstream[m];
+else if(s==0)
+    temp[(pagefaults-1)%frames]=incomingstream[m];
+printf("\n");
+printf("%d\t",incomingstream[m]);
+for(n=0;n<frames;n++){
+    if(temp[n]!=-1)
+        printf("%d\t",temp[n]);
+    else
+        printf("-1\t");
+}
+}
+printf("\nTotal page faults:\t%d\n",pagefaults);
+return 0;
+
+
+}
