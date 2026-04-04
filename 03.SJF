@@ -34,18 +34,14 @@ else{
     currenttime=ct[p];
 }
 }
-    float totalwt=0,totaltat=0,totalrt=0;
-    printf("PNo.\tAT\tBT\tST\tCT\tTAT\tWT\tRT\n");
+    float totalwt=0,totaltat=0;
+    printf("PNo.\tAT\tBT\tCT\tTAT\tWT\n");
     for(i=0;i<n;i++){
-        printf("p[%d]\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",i+1,at[i],bt[i],start[i],ct[i],tat[i],wt[i],rt[i]);
+        printf("p%d\t%d\t%d\t%d\t%d\t%d\n",i+1,at[i],bt[i],ct[i],tat[i],wt[i]);
         totalwt += wt[i];
         totaltat += tat[i];
-        totalrt += rt[i];
     }
     printf("Avg waiting time = %.2f\n",totalwt/n);
     printf("Avg turn around time = %.2f\n",totaltat/n);
-    printf("Avg response time = %.2f\n",totalrt/n);
 return 0;
 }
-
-
