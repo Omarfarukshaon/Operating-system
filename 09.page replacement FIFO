@@ -1,38 +1,52 @@
-#include<stdio.h>
-int main(){
-int incomingstream[]={2,4,5,6,7,8,6,7,4,2,9,2,5,4,7,5,9};
-int pagefaults=0;
-int frames =3;
-int m,n,s,pages;
-pages=sizeof(incomingstream)/sizeof(incomingstream[0]);
-printf("Incoming frame1\tframe2\tframe3");
-int temp[frames];
-for(m=0;m<frames;m++)
-    temp[m]=-1;
-for(m=0;m<pages;m++){
-    s=0;
-    for(n=0;n<frames;n++){
-        if(incomingstream[m]==temp[n]){
-            s++;
-            pagefaults--;
+#include <stdio.h>
+int main() {
+    int n, f;
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    int pages[n];
+    printf("Enter the page reference string:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &pages[i]);
+
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+
+    int frames[f];
+    for (int i = 0; i < f; i++)
+        frames[i] = -1;
+
+    int index = 0, faults = 0;
+
+    printf("\nPage\tFrames\n");
+    for (int i = 0; i < n; i++) {
+        int page = pages[i];
+        int found = 0;
+
+        for (int j = 0; j < f; j++) {
+            if (frames[j] == page) {
+                found = 1;
+                break;
+            }
         }
+
+        if (!found) {
+            frames[index] = page;
+            index = (index + 1) % f;
+            faults++;
+        }
+
+        printf("%d\t", page);
+        for (int j = 0; j < f; j++) {
+            if (frames[j] == -1)
+                printf("- ");
+            else
+                printf("%d ", frames[j]);
+        }
+        printf("\n");
     }
-    pagefaults++;
-if((pagefaults<=frames) && (s==0))
-    temp[m]=incomingstream[m];
-else if(s==0)
-    temp[(pagefaults-1)%frames]=incomingstream[m];
-printf("\n");
-printf("%d\t",incomingstream[m]);
-for(n=0;n<frames;n++){
-    if(temp[n]!=-1)
-        printf("%d\t",temp[n]);
-    else
-        printf("-1\t");
-}
-}
-printf("\nTotal page faults:\t%d\n",pagefaults);
-return 0;
 
+    printf("\nTotal Page Faults = %d\n", faults);
 
+    return 0;
 }
