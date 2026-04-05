@@ -1,63 +1,68 @@
 #include <stdio.h>
-#include <stdbool.h>
-
-#define MAX 100
-
-bool search(int key, int fr[], int size) {
-    for (int i = 0; i < size; i++)
-        if (fr[i] == key)
-            return true;
-    return false;
-}
-
-int predict(int pg[], int fr[], int pn, int index, int fn) {
-    int res = -1, farthest = index;
-    for (int i = 0; i < fn; i++) {
+int findOptimal(int pages[], int frames[], int n, int f, int pos) {
+    int farthest = -1, index = -1;
+    for (int i = 0; i < f; i++) {
         int j;
-        for (j = index; j < pn; j++) {
-            if (fr[i] == pg[j]) {
+        for (j = pos; j < n; j++) {
+            if (frames[i] == pages[j]) {
                 if (j > farthest) {
                     farthest = j;
-                    res = i;
+                    index = i;
                 }
                 break;
             }
         }
-        if (j == pn)
+        if (j == n)
             return i;
     }
-    return (res == -1) ? 0 : res;
-}
-
-void optimalPage(int pg[], int pn, int fn) {
-    int fr[MAX];
-    int size = 0;
-    int hit = 0;
-
-    for (int i = 0; i < pn; i++) {
-        if (search(pg[i], fr, size)) {
-            hit++;
-            continue;
-        }
-
-        if (size < fn) {
-            fr[size++] = pg[i];
-        } else {
-            int j = predict(pg, fr, pn, i + 1, fn);
-            fr[j] = pg[i];
-        }
-    }
-
-    printf("No. of hits = %d\n", hit);
-    printf("No. of misses = %d\n", pn - hit);
+    return (index == -1) ? 0 : index;
 }
 
 int main() {
-    int pg[] = { 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2 };
-    int pn = sizeof(pg) / sizeof(pg[0]);
-    int fn = 4;
+    int n, f;
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
 
-    optimalPage(pg, pn, fn);
+    int pages[n];
+    printf("Enter page reference string:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &pages[i]);
+
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+
+    int frames[f], faults = 0;
+    for (int i = 0; i < f; i++)
+        frames[i] = -1;
+
+    printf("\nPage\tFrames\n");
+    for (int i = 0; i < n; i++) {
+        int page = pages[i], found = 0;
+
+        for (int j = 0; j < f; j++)
+            if (frames[j] == page)
+                found = 1;
+
+        if (!found) {
+            int empty = -1;
+            for (int j = 0; j < f; j++)
+                if (frames[j] == -1)
+                    empty = j;
+
+            if (empty != -1)
+                frames[empty] = page;
+            else
+                frames[findOptimal(pages, frames, n, f, i+1)] = page;
+
+            faults++;
+        }
+
+        printf("%d\t", page);
+        for (int j = 0; j < f; j++)
+            (frames[j] == -1) ? printf("- ") : printf("%d ", frames[j]);
+        printf("\n");
+    }
+
+    printf("\nTotal Page Faults = %d\n", faults);
     return 0;
 }
-
